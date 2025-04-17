@@ -1,91 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Website dengan Bootstrap</title>
-
-  <!-- Menyertakan CSS Bootstrap dari CDN -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Google Sheets + Bootstrap</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-
-  <!-- Navbar (Menu Navigasi) -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#">My Website</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="#">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Services</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Jumbotron (Header Section) -->
   <div class="container mt-5">
-    <div class="jumbotron bg-primary text-white p-5">
-      <h1>Welcome to My Website</h1>
-      <p class="lead">This is a simple website made with Bootstrap</p>
-    </div>
+    <h2 class="mb-4">Data from Google Sheets</h2>
+    <div id="sheet-data" class="table-responsive"></div>
   </div>
 
-  <!-- Grid System -->
-  <div class="container mt-5">
-    <div class="row">
-      <div class="col-md-4">
-        <div class="card" style="width: 18rem;">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">Card Title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card" style="width: 18rem;">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">Card Title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-4">
-        <div class="card" style="width: 18rem;">
-          <img src="https://via.placeholder.com/150" class="card-img-top" alt="...">
-          <div class="card-body">
-            <h5 class="card-title">Card Title</h5>
-            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-            <a href="#" class="btn btn-primary">Go somewhere</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <script>
+    const API_KEY = 'AIzaSyBdIK_Ozr8nvpq7Vy49ld8kW9ueeV2qY78';
+    const SHEET_ID = '1gEdbp7JyZlQ8r8yqLkvvh42SMGqbyyn1Gh_-jGv4eRg/edit?gid=721051410#gid=721051410';
+    const RANGE = 'AC INSPECTION FINDING DATA!A1:R41'; // Change as needed
 
-  <!-- Footer -->
-  <footer class="bg-dark text-white text-center p-3 mt-5">
-    <p>&copy; 2025 My Website. All Rights Reserved.</p>
-  </footer>
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
 
-  <!-- Menyertakan JS Bootstrap dari CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    fetch(url)
+      .then(response => response.json())
+      .then(data => {
+        const values = data.values;
+        if (!values) return;
+
+        let table = '<table class="table table-bordered"><thead><tr>';
+        values[0].forEach(header => {
+          table += `<th>${header}</th>`;
+        });
+        table += '</tr></thead><tbody>';
+
+        for (let i = 1; i < values.length; i++) {
+          table += '<tr>';
+          values[i].forEach(cell => {
+            table += `<td>${cell}</td>`;
+          });
+          table += '</tr>';
+        }
+
+        table += '</tbody></table>';
+        document.getElementById('sheet-data').innerHTML = table;
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  </script>
 </body>
 </html>
