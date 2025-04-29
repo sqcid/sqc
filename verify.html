@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Member Verification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            max-width: 600px;
+            margin: auto;
+            background: #f7f7f7;
+            border-radius: 8px;
+            margin-top: 50px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        .status {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <h1>Member Verification</h1>
+    <p class="status" id="result">Verifying...</p>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const id = params.get("id");
+
+        const resultEl = document.getElementById("result");
+
+        if (id) {
+            // Simulated check — in real use, fetch from database or JSON
+            const members = {
+                "141499": { name: "I KADEK DWI ATMAJAYA", status: "Active", license_number: "A180168" },
+                "123456": { name: "Jane Smith", status: "Inactive", license_number: "Silver Member" }
+            };
+
+            const member = members[id];
+
+            if (member) {
+                resultEl.innerHTML = `
+                    ✅ Member Found<br><br>
+                    <strong>Member ID:</strong> ${id}<br>
+                    <strong>Name:</strong> ${member.name}<br>
+                    <strong>Status:</strong> ${member.status}<br>
+                    <strong>License:</strong> ${member.license_number}
+                `;
+            } else {
+                resultEl.innerHTML = `❌ Member ID <strong>${id}</strong> not found.`;
+            }
+        } else {
+            resultEl.innerHTML = "❌ No Member ID specified in the URL.";
+        }
+    </script>
+</body>
+</html>
+
